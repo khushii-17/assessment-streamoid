@@ -156,17 +156,41 @@ If you get import or DB connection errors, verify your virtual environment, `.en
 
 ## Endpoints and examples
 
-1) List all products
-
+1) List all products (paginated)
+   
 - Method: GET
 - Path: `/products/`
 
-Example using curl:
+This endpoint now returns paginated results using the `fastapi-pagination` library. The route was updated to return `Page[Product]` and the application was wired with `add_pagination(app)` in `backend/main.py`.
+
+Query parameters (provided by fastapi-pagination):
+
+- `page` (int, optional) — page number to retrieve. Default: 1.
+- `size` (int, optional) — number of items per page. Default: 50.
+
+Example using curl (get page 1 with 10 items per page):
 
 ```bash
-curl -sS http://127.0.0.1:8000/products/ | jq
+curl -sS "http://127.0.0.1:8000/products/?page=1&size=10" | jq
 ```
 
+Example response shape (JSON) — fields are provided by `fastapi-pagination`'s `Page` model and may include at least the following:
+
+```json
+{
+	"items": [ /* array of Product objects */ ],
+	"total": 123,
+	"page": 1,
+	"size": 10
+}
+```
+
+Notes:
+
+- Clients should now expect a paginated `Page[Product]` response instead of a raw list. Update any callers that previously assumed a bare JSON array.
+- The implementation details: `backend/main.py` calls `add_pagination(app)`, `requirements.txt` includes `fastapi-pagination`, and `backend/routes/products.py` uses `paginate(products)` with `response_model=Page[Product]`.
+- If you need different defaults or pagination styles (limit/offset), `fastapi-pagination` can be configured; see the library docs for customization.
+  
 2) Upload products via CSV
 
 - Method: POST
