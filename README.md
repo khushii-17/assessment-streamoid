@@ -187,7 +187,7 @@ Example response shape (JSON) — fields are provided by `fastapi-pagination`'s 
 
 Notes:
 
-- Clients should now expect a paginated `Page[Product]` response instead of a raw list. Update any callers that previously assumed a bare JSON array.
+- Expect a paginated `Page[Product]` response instead of a raw list.
 - The implementation details: `backend/main.py` calls `add_pagination(app)`, `requirements.txt` includes `fastapi-pagination`, and `backend/routes/products.py` uses `paginate(products)` with `response_model=Page[Product]`.
 - If you need different defaults or pagination styles (limit/offset), `fastapi-pagination` can be configured; see the library docs for customization.
   
@@ -312,11 +312,3 @@ Important behavior:
 - Add tests:
 	- Unit tests for the CSV parsing and validation logic.
 	- Integration tests for endpoints (using a test database or Dockerized Postgres).
-- Improve CSV error reporting: include row number and validation error messages.
-- Add pagination for GET `/products/`.
-- Make search filters more flexible (support single-sided price filters and multiple brands/colors).
-- Add authentication/authorization for the upload endpoint.
-
----
-
-If you'd like, I can add automated tests for the CSV parsing logic and the search SQL builder next. Which would you prefer I do first?
