@@ -175,7 +175,7 @@ curl -sS "http://127.0.0.1:8000/products/?page=1&size=10" | jq
 ```
 
 Example response shape (JSON) — fields are provided by `fastapi-pagination`'s `Page` model and may include at least the following:
-
+curl -X POST "http://127.0.0.1:8000/products/upload" \
 ```json
 {
 	"items": [ /* array of Product objects */ ],
