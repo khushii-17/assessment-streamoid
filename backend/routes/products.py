@@ -5,17 +5,18 @@ import csv
 import io
 from backend.db import get_connection
 from backend.models import Product
+from fastapi_pagination import Page, paginate
 
 router = APIRouter(prefix="/products", tags=["products"])
 
-@router.get("/")
+@router.get("/", response_model=Page[Product])
 def get_products():
     query = "SELECT * FROM products;"
     with get_connection() as conn:
         with conn.cursor() as cur:
             cur.execute(query)
             products = cur.fetchall()
-    return products
+    return paginate(products)
 
 
 @router.post("/upload")
