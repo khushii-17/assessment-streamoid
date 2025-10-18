@@ -248,6 +248,28 @@ Notes:
 - Matching for `brand` and `color` is case-insensitive and performed using SQL `ILIKE` with `%` wildcards for substring search.
 - Price range search expects numeric `min_price` and `max_price` values. Provide both to search a range.
 
+Pagination for search results
+
+- The `/products/search` endpoint is also paginated and returns a `Page[Product]` response (same pagination model used by `/products/`).
+- Use the `page` and `size` query parameters to control which page and how many results per page are returned.
+
+Example (search by brand, page 2 with 20 results per page):
+
+```bash
+curl -sS "http://127.0.0.1:8000/products/search?brand=BrandA&page=2&size=20" | jq
+```
+
+Example response shape (JSON):
+
+```json
+{
+	"items": [ /* array of Product objects matching the search */ ],
+	"total": 86,
+	"page": 2,
+	"size": 20
+}
+```
+
 ## CSV upload format and example
 
 The upload endpoint expects a CSV with headers. The code expects the following headers to be present at a minimum:
