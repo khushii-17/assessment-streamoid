@@ -79,7 +79,7 @@ async def upload_file(file: UploadFile = File(...)):
 
 
 @router.get("/search")
-async def search_products_by_brand(
+def search_products_by_brand(
     brand: Optional[str] = None,
     color: Optional[str] = None,
     min_price: Optional[float] = None,
