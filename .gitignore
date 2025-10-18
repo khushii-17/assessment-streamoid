@@ -1,5 +1,4 @@
 .venv
-resources
 .DS_Store
 .env
 __pycache__
