@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from contextlib import asynccontextmanager
 from backend.db import init_db
+from fastapi_pagination import add_pagination
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -10,6 +11,7 @@ async def lifespan(app: FastAPI):
     print("Shutting down...")
 
 app = FastAPI(title="Product Catalog Backend Project", lifespan=lifespan)
+add_pagination(app)
 
 from backend.routes import products
 app.include_router(products.router)
