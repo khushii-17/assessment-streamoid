@@ -1,3 +1,4 @@
+from typing import Optional
 from fastapi import APIRouter, File, UploadFile, HTTPException
 from fastapi.responses import JSONResponse
 import csv
@@ -75,3 +76,41 @@ async def upload_file(file: UploadFile = File(...)):
         "stored": len(valid_rows),
         "failed": invalid_rows
     })
+
+
+@router.get("/search")
+async def search_products_by_brand(
+    brand: Optional[str] = None,
+    color: Optional[str] = None,
+    min_price: Optional[float] = None,
+    max_price: Optional[float] = None
+    ):
+    # Build SQL with safe %s placeholders for psycopg2 and combine conditions with AND.
+    conditions = []
+    params = []
+
+    sql_query = "SELECT * FROM products"
+
+    if color:
+        conditions.append("product_color ILIKE %s")
+        params.append(f"%{color}%")
+
+    if min_price is not None and max_price is not None:
+        conditions.append("product_mrp >= %s AND product_mrp <= %s")
+        params.append(min_price)
+        params.append(max_price)
+
+    if brand:
+        conditions.append("product_brand ILIKE %s")
+        params.append(f"%{brand}%")
+
+    if conditions:
+        sql_query = sql_query + " WHERE " + " AND ".join(conditions)
+
+    # Execute the query and fetch results
+    with get_connection() as conn:
+        with conn.cursor() as cur:
+            cur.execute(sql_query, params)
+            products = cur.fetchall()
+
+    return products
