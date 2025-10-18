@@ -79,7 +79,7 @@ async def upload_file(file: UploadFile = File(...)):
     })
 
 
-@router.get("/search")
+@router.get("/search", response_model=Page[Product])
 def search_products_by_brand(
     brand: Optional[str] = None,
     color: Optional[str] = None,
@@ -114,4 +114,4 @@ def search_products_by_brand(
             cur.execute(sql_query, params)
             products = cur.fetchall()
 
-    return products
+    return paginate(products)
