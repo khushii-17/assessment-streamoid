@@ -27,8 +27,7 @@ def get_connection():
 def init_db():
     """Initialize database table if not exists."""
     query = """
-        DROP TABLE IF EXISTS products;
-        CREATE TABLE products (
+        CREATE TABLE IF NOT EXISTS products (
             id SERIAL PRIMARY KEY,
             product_sku VARCHAR(100) UNIQUE NOT NULL,
             product_name VARCHAR(255) NOT NULL,
